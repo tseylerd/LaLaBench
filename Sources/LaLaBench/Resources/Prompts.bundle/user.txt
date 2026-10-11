@@ -1,0 +1,7 @@
+Complete inference trace to evaluate. The steps run in order. The response of the final step is the final result to evaluate.
+
+<inference_trace>
+{{steps}}
+</inference_trace>
+
+Evaluate the final result according to your instructions and output only the JSON object defined.
