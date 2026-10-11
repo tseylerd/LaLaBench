@@ -25,9 +25,7 @@ final class LaLaBenchmarkCaseEvaluator {
                 result += string
             case .info(let generateCompletionInfo):
                 Self.LOG.info("\(generateCompletionInfo.summary())")
-            case .toolCall(_):
-                continue
-            case .rejectedToolCall(_):
+            default:
                 continue
             }
         }
