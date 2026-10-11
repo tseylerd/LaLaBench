@@ -1,3 +1,4 @@
+> [!WARNING]
 > It's alpha, everything is expected to change.
 
 # LaLaBench
@@ -11,7 +12,7 @@ Add the package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/<your-org>/LaLaBench.git", from: "0.1-alpha"),
+    .package(url: "https://github.com/tseylerd/LaLaBench.git", from: "0.1-alpha"),
 ]
 ```
 
@@ -44,15 +45,50 @@ let benchmarkCase = LaLaBenchmarkCase(steps: [
 let benchmark = try await LaLaBenchmark(cases: [benchmarkCase], llm: llm)
 let result = try await benchmark.run()
 
-print(result.averageScore)            // 1-5, average quality of the final results
-print(result.accuracyRate)            // 0-1, share of cases with no factual errors
-print(result.instructionFollowingRate)
-print(result.formatFollowingRate)
-print(result.requestAddressedRate)
-print(result.benchmarkFailureRate)    // 0-1, cases the benchmark itself failed to evaluate
+print(result.averageScore)            // 1-5, average quality
+print(result.accuracyRate)            // 0-1, no factual errors
+print(result.instructionFollowingRate) // 0-1, followed all instructions
+print(result.formatFollowingRate)     // 0-1, matches the requested format
+print(result.requestAddressedRate)    // 0-1, on point
+print(result.benchmarkFailureRate)    // 0-1, rate of failed to evaluate cases
 ```
 
-Each case result contains the four checks (`followedInstructions`, `followedFormat`, `addressesTheRequest`, `isAccurate`), a score from 1 to 5, and a `rationale` explaining the verdict.
+Each case result contains:
+
+- `followedInstructions` (every explicit instruction from all steps is followed)
+- `followedFormat` (output matches the requested format)
+- `addressesTheRequest` (on point, covers what was asked)
+- `isAccurate` (no factual errors)
+- `score` (quality rating based on all criteria, from 1 to 5)
+- `rationale` (verdict explanation)
+
+Here's the structure of what you get back:
+
+```swift
+public struct LaLaBenchmarkResult: Sendable {
+    public let instructionFollowingRate: Double  // 0-1, followed all instructions
+    public let formatFollowingRate: Double       // 0-1, matches the requested format
+    public let requestAddressedRate: Double      // 0-1, on point
+    public let accuracyRate: Double              // 0-1, no factual errors
+    public let averageScore: Double              // 1-5, average quality
+    public let benchmarkFailureRate: Double      // 0-1, failed to evaluate
+    public let results: [LaLaBenchmarkCaseElement]  // one per case
+}
+
+public enum LaLaBenchmarkCaseElement: Sendable {
+    case success(result: LaLaBenchmarkCaseResult)  // judge returned a verdict
+    case failure(error: String)                    // judge failed to produce one
+}
+
+public struct LaLaBenchmarkCaseResult: Codable, Sendable {
+    public let followedInstructions: Bool  // all explicit instructions were followed
+    public let followedFormat: Bool        // matches the requested format
+    public let addressesTheRequest: Bool   // on point, covers what was asked
+    public let isAccurate: Bool            // no factual errors
+    public let score: Int                  // 1-5
+    public let rationale: String           // why the judge decided that
+}
+```
 
 ## Technical details
 - Uses [mlx-swift-lm](https://github.com/ml-explore/mlx-swift-lm). Everything runs locally on Apple Silicon.
