@@ -7,6 +7,6 @@ import Tokenizers
 import Foundation
 
 @LaLaBenchmarkActor
-protocol LaLaBenchmarkInferenceEngine {
+public protocol LaLaBenchmarkInferenceEngine {
     func infer(system: String, user: String) async throws -> AsyncStream<Generation>
 }

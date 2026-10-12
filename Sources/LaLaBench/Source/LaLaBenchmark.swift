@@ -13,7 +13,7 @@ public final class LaLaBenchmark {
         self.engine = try await LaLaBenchmarkMLXInferenceEngine(llm: llm)
     }
     
-    init(cases: [LaLaBenchmarkCase], engine: LaLaBenchmarkInferenceEngine) async throws {
+    public init(cases: [LaLaBenchmarkCase], engine: LaLaBenchmarkInferenceEngine) async throws {
         self.cases = cases
         self.engine = engine
     }
