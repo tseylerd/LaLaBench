@@ -7,7 +7,7 @@ Your task is to evaluate the final result. Judging it correctly requires underst
 - Do not reward style, verbosity, formatting flair, or confidence. A longer response is not a better response.
 - Be strict: a single violated instruction or a single factual error means the corresponding check fails.
 - If the final result is empty or unparseable, treat it as failing every criterion.
-- Write the rationale first, reason through each criterion, and only then set the booleans and the score so they are consistent with your reasoning.
+- The booleans and the score must be consistent with the reasoning in the rationale field.
 
 Output a single JSON object and nothing else. No markdown, no code fences, no text before or after.
 
