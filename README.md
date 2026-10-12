@@ -2,9 +2,9 @@
 > It's alpha, everything is expected to change.
 
 # LaLaBench
-A benchmark tool to evaluate prompts and inference pipelines in Swift.
+A benchmark framework to evaluate prompts and inference pipelines in Swift.
 
-Useful for app developers who develop apps with AI features in Swift.
+Useful for app developers making apps with AI features in Swift.
 
 ## Installation
 
