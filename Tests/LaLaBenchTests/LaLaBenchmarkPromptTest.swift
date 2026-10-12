@@ -35,18 +35,6 @@ func promptsAreCorrect() async throws {
         - If the final result is empty or unparseable, treat it as failing every criterion.
         - The booleans and the score must be consistent with the reasoning in the rationale field.
 
-        Output a single JSON object and nothing else. No markdown, no code fences, no text before or after.
-
-        Output schema (the keys must appear exactly in this order):
-        {
-          "rationale": "string - brief evaluation: what the chain of steps asked for, what the final result did, verdict per criterion",
-          "followedInstructions": "boolean",
-          "followedFormat": "boolean",
-          "addressesTheRequest": "boolean",
-          "isAccurate": "boolean",
-          "score": "integer 1-5"
-        }
-
         Criteria (true = pass):
         - followedInstructions: the final result follows every explicit instruction that the chain of steps imposes on it (actions to perform, things to avoid, language, length limits), whether stated in the final step or in any earlier step. false if any stated instruction is violated.
         - followedFormat: the final result matches the output format required of it (structure, fields, order, encoding) by the final step's system prompt and by anything the chain of steps specifies about the final output. false on any structural deviation.
@@ -85,7 +73,7 @@ func promptsAreCorrect() async throws {
         </step2>
         </inference_trace>
 
-        Evaluate the final result according to your instructions and output only the JSON object defined.
+        Evaluate the final result according to your instructions.
         """)
 
 }

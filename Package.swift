@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
     name: "LaLaBench",
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17),
+        .macOS(.v27),
+        .iOS(.v27),
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -31,6 +31,7 @@ let package = Package(
                 .product(name: "MLXLLM", package: "mlx-swift-lm"),
                 .product(name: "MLXLMCommon", package: "mlx-swift-lm"),
                 .product(name: "MLXHuggingFace", package: "mlx-swift-lm"),
+                .product(name: "MLXFoundationModels", package: "mlx-swift-lm"),
                 .product(name: "MLX", package: "mlx-swift"),
                 .product(name: "Tokenizers", package: "swift-transformers"),
                 .product(name: "HuggingFace", package: "swift-huggingface"),

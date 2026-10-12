@@ -4,4 +4,4 @@ Complete inference trace to evaluate. The steps run in order. The response of th
 {{steps}}
 </inference_trace>
 
-Evaluate the final result according to your instructions and output only the JSON object defined.
+Evaluate the final result according to your instructions.

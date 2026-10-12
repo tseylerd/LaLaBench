@@ -5,12 +5,10 @@ import MLXLMCommon
 final class PromptInterceptor: LaLaBenchmarkInferenceEngine {
     var prompts: [InterceptedPrompt] = []
     
-    func infer(system: String, user: String) async throws -> AsyncStream<Generation> {
+    func infer(system: String, user: String) async throws -> LaLaBenchmarkCaseResult? {
         prompts.append(InterceptedPrompt(system: system.trimmingCharacters(in: .whitespacesAndNewlines), user: user.trimmingCharacters(in: .whitespacesAndNewlines)))
         
-        return AsyncStream { cont in
-            cont.finish()
-        }
+        return nil
     }
 }
 
