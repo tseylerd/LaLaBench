@@ -14,6 +14,21 @@ final class LaLaBenchmarkCaseEvaluator {
     }
     
     func evaluate() async throws -> LaLaBenchmarkCaseResult? {
+        guard let lastStep = benchmarkCase.steps.last else {
+            return nil
+        }
+        
+        guard let response = lastStep.response else {
+            return LaLaBenchmarkCaseResult(
+                followedInstructions: false,
+                followedFormat: false,
+                addressesTheRequest: false,
+                isAccurate: false,
+                score: 1,
+                rationale: "No result"
+            )
+        }
+        
         let system = LaLaBenchmarkUtil.SYSTEM_PROMPT
         let user = LaLaBenchmarkUtil.apply(benchmarkCase: benchmarkCase, into: LaLaBenchmarkUtil.USER_PROMPT)
         return try await engine.infer(system: system, user: user)
