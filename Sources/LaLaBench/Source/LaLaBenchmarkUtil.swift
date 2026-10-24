@@ -1,6 +1,9 @@
 import Foundation
+import OSLog
 
 struct LaLaBenchmarkUtil {
+    private static let LOG = Logger(subsystem: "Util", category: "LaLaBenchmarkUtil")
+    
     static let SYSTEM_PROMPT = loadPrompt(named: "system")
     static let USER_PROMPT = loadPrompt(named: "user")
 
@@ -52,6 +55,15 @@ struct LaLaBenchmarkUtil {
                 } else {
                     ""
                 }
+                let fieldsBlock = if let fields = step.fields, let rendered = render(fields: fields) {
+                    """
+                    \n<fields>
+                    \(rendered)
+                    </fields>
+                    """
+                } else {
+                    ""
+                }
                 return """
                 \(stepTag)
                 <system_prompt>
@@ -59,11 +71,26 @@ struct LaLaBenchmarkUtil {
                 </system_prompt>
                 <user_message>
                 \(step.userPrompt)
-                </user_message>\(responseBlock)
+                </user_message>\(fieldsBlock)\(responseBlock)
                 </step\(index + 1)>
                 """
             }
             .joined(separator: "\n")
     }
     
+    private static func render(fields: [LaLaResponseField]) -> String? {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        do {
+            let data = try encoder.encode(fields)
+            if let result = String(data: data, encoding: .utf8) {
+                return result
+            }
+            LOG.error("Failed to create string from data")
+            return nil
+        } catch {
+            LOG.error("Failed to encode fields: \(error.localizedDescription)")
+            return nil
+        }
+    }
 }

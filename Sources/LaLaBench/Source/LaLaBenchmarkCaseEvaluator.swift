@@ -18,7 +18,7 @@ final class LaLaBenchmarkCaseEvaluator {
             return nil
         }
         
-        guard let response = lastStep.response else {
+        guard let _ = lastStep.response else {
             return LaLaBenchmarkCaseResult(
                 followedInstructions: false,
                 followedFormat: false,

@@ -9,8 +9,8 @@ func promptsAreCorrect() async throws {
     let benchmark = try await LaLaBenchmark(
         cases: [
             LaLaBenchmarkCase(steps: [
-                LaLaInferenceStep(systemPrompt: "1", userPrompt: "2", response: nil),
-                LaLaInferenceStep(systemPrompt: "4", userPrompt: "5", response: "6"),
+                LaLaInferenceStep(systemPrompt: "1", userPrompt: "2", fields: nil, response: nil),
+                LaLaInferenceStep(systemPrompt: "4", userPrompt: "5", fields: [LaLaResponseField(name: "result", description: "final value")], response: "{\"result\" : 6}"),
             ])
         ],
         engine: interceptor
@@ -25,7 +25,7 @@ func promptsAreCorrect() async throws {
     let prompt = try #require(intercepted.first)
     #expect(prompt.system == """
         You are a strict evaluator of AI assistant responses.
-        You receive a complete multi-step inference trace: the sequence of steps the assistant worked through, in order. Each step has its own system prompt and user message, and may include its response. The response of the final step is the final result of the trace.
+        You receive a complete multi-step inference trace: the sequence of steps the assistant worked through, in order. Each step has its own system prompt, user message, expected output fields, and may include its response. The response of the final step is the final result of the trace.
 
         Your task is to evaluate the final result. Judging it correctly requires understanding the whole chain: the system prompts and user messages of every step constrain what the final result must be. Rules:
         - Judge only what the system prompt and user message of each step ask for. Do not invent additional requirements.
@@ -67,13 +67,21 @@ func promptsAreCorrect() async throws {
         <user_message>
         5
         </user_message>
+        <fields>
+        [
+          {
+            "description" : "final value",
+            "name" : "result"
+          }
+        ]
+        </fields>
         <response>
-        6
+        {"result" : 6}
         </response>
         </step2>
         </inference_trace>
 
         Evaluate the final result according to your instructions.
         """)
-
+    print(prompt.user)
 }
