@@ -4,22 +4,19 @@ import OSLog
 @LaLaBenchmarkActor
 public final class LaLaBenchmark {
     private static let LOG = Logger(subsystem: "Benchmark", category: "Benchmark")
-    
-    private let cases: [LaLaBenchmarkCase]
+
     private let engine: LaLaBenchmarkInferenceEngine
     
-    public init(cases: [LaLaBenchmarkCase], llm: LaLaBenchmarkLLM) async throws {
-        self.cases = cases
+    public init(llm: LaLaBenchmarkLLM) async throws {
         self.engine = try await LaLaBenchmarkMLXInferenceEngine(llm: llm)
     }
     
-    public init(cases: [LaLaBenchmarkCase], engine: LaLaBenchmarkInferenceEngine) async throws {
-        self.cases = cases
+    public init(engine: LaLaBenchmarkInferenceEngine) async throws {
         self.engine = engine
     }
     
-    public func run() async throws -> LaLaBenchmarkResult {
-        Self.LOG.info("Starting benchmark with \(self.cases.count) cases")
+    public func run(cases: [LaLaBenchmarkCase]) async throws -> LaLaBenchmarkResult {
+        Self.LOG.info("Starting benchmark with \(cases.count) cases")
         
         var result: [LaLaBenchmarkCaseElement] = []
         var i = 0

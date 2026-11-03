@@ -7,16 +7,15 @@ import Testing
 func promptsAreCorrect() async throws {
     let interceptor = PromptInterceptor()
     let benchmark = try await LaLaBenchmark(
-        cases: [
-            LaLaBenchmarkCase(steps: [
-                LaLaInferenceStep(systemPrompt: "1", userPrompt: "2", fields: nil, response: nil),
-                LaLaInferenceStep(systemPrompt: "4", userPrompt: "5", fields: [LaLaResponseField(name: "result", description: "final value")], response: "{\"result\" : 6}"),
-            ])
-        ],
         engine: interceptor
     )
 
-    _ = try await benchmark.run()
+    _ = try await benchmark.run(cases: [
+        LaLaBenchmarkCase(steps: [
+            LaLaInferenceStep(systemPrompt: "1", userPrompt: "2", fields: nil, response: nil),
+            LaLaInferenceStep(systemPrompt: "4", userPrompt: "5", fields: [LaLaResponseField(name: "result", description: "final value")], response: "{\"result\" : 6}"),
+        ])
+    ])
 
     let intercepted = interceptor.prompts
 
