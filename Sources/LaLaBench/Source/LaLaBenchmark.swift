@@ -5,18 +5,20 @@ import OSLog
 public final class LaLaBenchmark {
     private static let LOG = Logger(subsystem: "Benchmark", category: "Benchmark")
 
-    private let engine: LaLaBenchmarkInferenceEngine
+    private let holder: LaLaInferenceEngineHolder
     
-    public init(llm: LaLaBenchmarkLLM) async throws {
-        self.engine = try await LaLaBenchmarkMLXInferenceEngine(llm: llm)
+    public init(llm: LaLaBenchmarkLLM) {
+        self.holder = LLMBasedInferenceEngineHolder(llm: llm)
     }
     
-    public init(engine: LaLaBenchmarkInferenceEngine) async throws {
-        self.engine = engine
+    public init(engine: LaLaBenchmarkInferenceEngine) {
+        self.holder = PrecomputedInferenceEngineHolder(engine: engine)
     }
     
     public func run(cases: [LaLaBenchmarkCase]) async throws -> LaLaBenchmarkResult {
         Self.LOG.info("Starting benchmark with \(cases.count) cases")
+        
+        let engine = try await holder.pick()
         
         var result: [LaLaBenchmarkCaseElement] = []
         var i = 0
@@ -111,5 +113,44 @@ public final class LaLaBenchmark {
             Self.LOG.error("Failed to serialize evaluation result: \(error.localizedDescription)")
             return nil
         }
+    }
+}
+
+@LaLaBenchmarkActor
+fileprivate protocol LaLaInferenceEngineHolder {
+    func pick() async throws -> any LaLaBenchmarkInferenceEngine
+}
+
+@LaLaBenchmarkActor
+fileprivate final class LLMBasedInferenceEngineHolder: LaLaInferenceEngineHolder {
+    private let llm: LaLaBenchmarkLLM
+    
+    private var engine: (any LaLaBenchmarkInferenceEngine)?
+    
+    init(llm: LaLaBenchmarkLLM) {
+        self.llm = llm
+    }
+    
+    func pick() async throws -> any LaLaBenchmarkInferenceEngine {
+        if let engine {
+            return engine
+        }
+        
+        let engine = try await LaLaBenchmarkMLXInferenceEngine(llm: llm)
+        self.engine = engine
+        return engine
+    }
+}
+
+@LaLaBenchmarkActor
+fileprivate struct PrecomputedInferenceEngineHolder: LaLaInferenceEngineHolder {
+    private let engine: any LaLaBenchmarkInferenceEngine
+    
+    init(engine: any LaLaBenchmarkInferenceEngine) {
+        self.engine = engine
+    }
+    
+    func pick() async throws -> any LaLaBenchmarkInferenceEngine {
+        engine
     }
 }
