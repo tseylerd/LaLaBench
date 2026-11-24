@@ -17,8 +17,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/ml-explore/mlx-swift-lm.git", from: "3.32.3"),
-        .package(url: "https://github.com/ml-explore/mlx-swift.git", .upToNextMinor(from: "0.32.3")),
+        .package(url: "https://github.com/ml-explore/mlx-swift-lm.git", from: "3.33.0"),
+        .package(url: "https://github.com/ml-explore/mlx-swift.git", .upToNextMinor(from: "0.33.0")),
         .package(url: "https://github.com/huggingface/swift-transformers.git", from: "1.3.5"),
         .package(url: "https://github.com/huggingface/swift-huggingface.git", from: "1.0.0"),
     ],
